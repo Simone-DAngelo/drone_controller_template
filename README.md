@@ -7,7 +7,7 @@ This project allows you to run a PX4 SITL simulation in Gazebo Classic, set up D
 - **Gazebo Classic**: Installed and properly configured.
 - **Micro XRCE-DDS Agent**: Installed to enable DDS communication.
 - **ROS2 Environment**: Installed and workspace properly configured.
-- **Tools and Dependencies**: CMake, GCC/Clang, and other libraries required during development.
+
 ## Additional Help and Troubleshooting
 For further assistance or if you need help, refer to the [PX4 ROS2 User Guide](https://docs.px4.io/main/en/ros2/user_guide.html).
 
