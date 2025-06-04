@@ -18,7 +18,9 @@ With dockerfiles: https://github.com/Prisma-Drone-Team/sitl_utils
     ```
     cd /path/to/PX4-Autopilot
     ```
-2. Start the SITL simulation with the desired model:
+2. Set the topic to stream over ROS2 network modifying the file https://github.com/PX4/PX4-Autopilot/blob/main/src/modules/uxrce_dds_client/dds_topics.yaml
+
+3. Start the SITL simulation with the desired model:
     ```
     make px4_sitl gazebo-classic
     ```
