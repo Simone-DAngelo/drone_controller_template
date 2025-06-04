@@ -21,7 +21,7 @@ With dockerfiles: https://github.com/Prisma-Drone-Team/sitl_utils
 2. Start the SITL simulation with the desired model:
     ```
     make px4_sitl gazebo-classic
-
+    ```
     **Important Note for Gazebo Garden Users:**
 
     If you are using Gazebo Garden instead of Gazebo Classic, be aware that the commands differ. Refer to the user guide for the specific instructions.
