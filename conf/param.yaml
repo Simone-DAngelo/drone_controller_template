@@ -1,0 +1,7 @@
+drone_control:
+  ros__parameters:
+    model_name: "iris"
+    # TODO: DEFINE MORE PARAMS
+    
+
+
