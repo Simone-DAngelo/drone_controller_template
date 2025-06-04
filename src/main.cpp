@@ -24,9 +24,9 @@ using namespace Eigen;
 
 using std::placeholders::_1;
 
-class CONTROLLER : public rclcpp::Node {
+class DRONE_CONTROLLER : public rclcpp::Node {
     public:
-        CONTROLLER();
+        DRONE_CONTROLLER();
         void run();
         void ctrl_loop();
         void request_new_plan();
@@ -97,11 +97,11 @@ class CONTROLLER : public rclcpp::Node {
         bool _armed;
 };
 
-CONTROLLER::CONTROLLER() : Node("drone_control"), _first_odom(false), _new_plan(false) {
+DRONE_CONTROLLER::DRONE_CONTROLLER() : Node("drone_control"), _first_odom(false), _new_plan(false) {
     
     timer_ = this->create_wall_timer(
         std::chrono::milliseconds(10),
-        std::bind(&CONTROLLER::timerCallback, this));
+        std::bind(&DRONE_CONTROLLER::timerCallback, this));
 
     // Get param from file yaml --------------------------------------- 
     declare_parameter("model_name","uav");
@@ -149,7 +149,7 @@ CONTROLLER::CONTROLLER() : Node("drone_control"), _first_odom(false), _new_plan(
     _armed = false;
 }
 
-void CONTROLLER::timerCallback() {
+void DRONE_CONTROLLER::timerCallback() {
     if(_first_odom){
         std_msgs::msg::Float32MultiArray motor_vel;
         motor_vel.data.resize( _motor_num );
@@ -185,7 +185,7 @@ void CONTROLLER::timerCallback() {
  * @param param1    Command parameter 1
  * @param param2    Command parameter 2
  */
-void CONTROLLER::publish_vehicle_command(uint16_t command, float param1, float param2)
+void DRONE_CONTROLLER::publish_vehicle_command(uint16_t command, float param1, float param2)
 {
 	px4_msgs::msg::VehicleCommand msg{};
 	msg.param1 = param1;
@@ -203,7 +203,7 @@ void CONTROLLER::publish_vehicle_command(uint16_t command, float param1, float p
 /**
  * @brief Send a command to Arm the vehicle
  */
-void CONTROLLER::arm(){
+void DRONE_CONTROLLER::arm(){
 	publish_vehicle_command(px4_msgs::msg::VehicleCommand::VEHICLE_CMD_COMPONENT_ARM_DISARM, 1.0);
 
 	RCLCPP_INFO(this->get_logger(), "Arm command send");
@@ -212,13 +212,13 @@ void CONTROLLER::arm(){
 /**
  * @brief Send a command to Disarm the vehicle
  */
-void CONTROLLER::disarm(){
+void DRONE_CONTROLLER::disarm(){
 	publish_vehicle_command(px4_msgs::msg::VehicleCommand::VEHICLE_CMD_COMPONENT_ARM_DISARM, 0.0);
 
 	RCLCPP_INFO(this->get_logger(), "Disarm command send");
 }
 
-void CONTROLLER::publish_thrust_setpoint(float thrust){
+void DRONE_CONTROLLER::publish_thrust_setpoint(float thrust){
 	px4_msgs::msg::VehicleThrustSetpoint msg{};
     
 	msg.xyz[0] = 0;
@@ -228,7 +228,7 @@ void CONTROLLER::publish_thrust_setpoint(float thrust){
 	_vehicle_thrust_sp_publisher->publish(msg);
 }
 
-void CONTROLLER::publish_torque_setpoint(Eigen::Vector3d torque)
+void DRONE_CONTROLLER::publish_torque_setpoint(Eigen::Vector3d torque)
 {
 	px4_msgs::msg::VehicleTorqueSetpoint msg{};
     
@@ -242,7 +242,7 @@ void CONTROLLER::publish_torque_setpoint(Eigen::Vector3d torque)
 // PX4 function specializing offboard mode to allow actuator control (thrust and torque setpoints)
 // From 1.15 is possible to control directly the actuators (motor velocities) check user guide for more information
 // https://docs.px4.io/main/en/msg_docs/OffboardControlMode.html
-void CONTROLLER::publish_offboard_control_mode()
+void DRONE_CONTROLLER::publish_offboard_control_mode()
 {
     px4_msgs::msg::OffboardControlMode msg{};
     msg.position = false;
@@ -256,7 +256,7 @@ void CONTROLLER::publish_offboard_control_mode()
 }
 
 // Send a new set point to the trajectory planner
-void CONTROLLER::request_new_plan() {
+void DRONE_CONTROLLER::request_new_plan() {
 
     // TODO CHANGE THE LOGIC AS YOU NEED
 
@@ -292,7 +292,7 @@ bool generate_allocation_matrix(Eigen::MatrixXd & allocation_M,
 }
 
 // Function to compute the 4-dofs desired trajectory
-void CONTROLLER::traj_comput(){
+void DRONE_CONTROLLER::traj_comput(){
   
    // TODO: implement trajectory planning logic
 
@@ -309,7 +309,7 @@ void CONTROLLER::traj_comput(){
 }
 
 // CONTROL LOOP
-void CONTROLLER::ctrl_loop() {
+void DRONE_CONTROLLER::ctrl_loop() {
 
     rclcpp::Rate r(_ctrl_rate);
 
@@ -341,8 +341,8 @@ void CONTROLLER::ctrl_loop() {
         cout<<"Vector of maximum command wrench: "<<_max_wrench.transpose()<<endl;
     // ---------------------------------------
 
-    boost::thread input_t( &CONTROLLER::request_new_plan, this);
-    boost::thread traj_comput_t(&CONTROLLER::traj_comput, this);
+    boost::thread input_t( &DRONE_CONTROLLER::request_new_plan, this);
+    boost::thread traj_comput_t(&DRONE_CONTROLLER::traj_comput, this);
 
     wd2rpm.resize( _motor_num, 4 );
     Eigen::Matrix4d I;
@@ -398,13 +398,13 @@ void CONTROLLER::ctrl_loop() {
     }   
 }
 
-void CONTROLLER::run() {
-    boost::thread ctrl_loop_t( &CONTROLLER::ctrl_loop, this );  
+void DRONE_CONTROLLER::run() {
+    boost::thread ctrl_loop_t( &DRONE_CONTROLLER::ctrl_loop, this );  
 }
 
 int main(int argc, char **argv) {
     rclcpp::init(argc, argv);
-    auto node = std::make_shared<CONTROLLER>();
+    auto node = std::make_shared<DRONE_CONTROLLER>();
     node->run();
     rclcpp::spin(node);
     rclcpp::shutdown();

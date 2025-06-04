@@ -42,12 +42,12 @@ void CONTROLLER::controller_fun(  Eigen::Vector3d mes_p,
     // YOUR CONTROLLER CODE HERE
 
 
-    *rotor_velocities = _wd2rpm * angular_acceleration_thrust;
-    *ft = angular_acceleration_thrust;
-    *rotor_velocities = rotor_velocities->cwiseMax(Eigen::VectorXd::Zero(rotor_velocities->rows()));
-    *rotor_velocities = rotor_velocities->cwiseSqrt();
+    // *rotor_velocities = _wd2rpm * angular_acceleration_thrust;
+    // *ft = angular_acceleration_thrust;
+    // *rotor_velocities = rotor_velocities->cwiseMax(Eigen::VectorXd::Zero(rotor_velocities->rows()));
+    // *rotor_velocities = rotor_velocities->cwiseSqrt();
 
-    *perror = position_error;
-    *verror = velocity_error;
+    // *perror = position_error;
+    // *verror = velocity_error;
       
 }

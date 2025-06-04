@@ -19,7 +19,7 @@ include_directories(/usr/include/eigen3)
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
-add_executable(drone_control src/main.cpp src/controller/drone_control.cpp)
+add_executable(drone_control src/main.cpp src/controller/controller.cpp)
 ament_target_dependencies(drone_control rclcpp geometry_msgs sensor_msgs nav_msgs std_msgs px4_msgs Boost)
 
 install(TARGETS
